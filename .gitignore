@@ -1,0 +1,15 @@
+.DS_Store
+.env
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+# Android
+app-android/.gradle/
+app-android/.kotlin/
+app-android/build/
+app-android/app/build/
+app-android/local.properties
+app-android/.idea/
+*.iml
+captures/

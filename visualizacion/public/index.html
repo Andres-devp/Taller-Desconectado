@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa de afectación</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="barra">
+    <h1>Mapa de afectación por desastres</h1>
+    <span id="estado" class="estado">Cargando…</span>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <section>
+        <h2>Filtros</h2>
+        <label>Evento
+          <select id="f-evento"><option value="">Todos los eventos</option></select>
+        </label>
+        <label>Nivel mínimo
+          <select id="f-nivel">
+            <option value="">Todos (1–5)</option>
+            <option value="2">2 o más</option>
+            <option value="3">3 o más</option>
+            <option value="4">4 o más</option>
+            <option value="5">Solo 5</option>
+          </select>
+        </label>
+        <div class="fila">
+          <label>Desde <input type="date" id="f-desde"></label>
+          <label>Hasta <input type="date" id="f-hasta"></label>
+        </div>
+        <label class="check"><input type="checkbox" id="f-puntos"> Mostrar puntos individuales</label>
+      </section>
+
+      <section>
+        <h2>Resumen</h2>
+        <p class="total"><strong id="total">0</strong> reportes</p>
+        <ul id="niveles" class="niveles"></ul>
+      </section>
+
+      <section>
+        <h2>Zonas más afectadas</h2>
+        <label>Tamaño de zona
+          <select id="f-celda">
+            <option value="0.01">≈ 1 km</option>
+            <option value="0.05" selected>≈ 5 km</option>
+            <option value="0.1">≈ 11 km</option>
+            <option value="0.5">≈ 55 km</option>
+          </select>
+        </label>
+        <ol id="zonas" class="zonas"></ol>
+      </section>
+    </aside>
+
+    <div id="mapa" class="mapa" role="region" aria-label="Mapa de calor"></div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

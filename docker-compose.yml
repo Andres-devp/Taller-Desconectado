@@ -1,0 +1,46 @@
+# Taller Desconectado — sistema central + visor de mapas de calor
+#
+#   App Android ──(HTTP :8000, cuando hay red)──► api (FastAPI) ──► postgres
+#   Navegador   ──(HTTP :8080)──► visor (nginx) ──/api──► api
+name: taller-desconectado
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-desastres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-desastres}
+      POSTGRES_DB: ${POSTGRES_DB:-desastres}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sincronizacion/database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-desastres} -d ${POSTGRES_DB:-desastres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build: ./sincronizacion
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-desastres}:${POSTGRES_PASSWORD:-desastres}@postgres:5432/${POSTGRES_DB:-desastres}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      MAX_LOTE: ${MAX_LOTE:-500}
+    ports:
+      - "8000:8000"          # expuesto a la LAN para que el celular sincronice
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  visor:
+    build: ./visualizacion
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:
